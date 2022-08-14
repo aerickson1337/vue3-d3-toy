@@ -14,7 +14,7 @@ let routeList = router.getRoutes()
     <div class="wrapper">
       <HelloWorld msg="You did it!" />
       <nav>
-      <div v-for="link in routeList" :key="link.name">
+      <div class="flexrow" v-for="link in routeList" :key="link.name">
         <RouterLink :to="link">{{link.name}}</RouterLink>
       </div>
       </nav>
@@ -28,6 +28,10 @@ let routeList = router.getRoutes()
 header {
   line-height: 1.5;
   max-height: 100vh;
+}
+
+.flexrow {
+  display: inline-flex;
 }
 
 .logo {

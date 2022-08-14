@@ -1,6 +1,6 @@
 <script lang="ts">
 import LineGraph from '../components/LineGraph.vue';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import type { Ref } from 'vue';
 import * as d3 from 'd3';
 
@@ -13,11 +13,19 @@ export default {
   components: { LineGraph },
   setup() {
     let data: Ref<number[]> = ref(generateDataset(100))
+    let datasetSize: Ref<number> = ref(1)
+    const largeData: readonly number[] = Object.freeze(generateDataset(10000000))
 
-    // expose the state to the template
+    function updateDataSet() {
+      data.value = data.value.concat(generateDataset(datasetSize.value))
+    }
+
     return {
       data,
+      datasetSize,
       generateDataset,
+      updateDataSet,
+      largeData,
     }
   }
 }
@@ -25,9 +33,16 @@ export default {
 
 <template>
   <div class="about">
-    <LineGraph :data="data" />
-    <button @click="data.push(...generateDataset(1))">add new datapoint</button>
-    <button @click="data = generateDataset(5)">reset</button>
+    <div class="controls">
+      <button class="button" @click="updateDataSet()">
+        add
+      </button>
+      <input type="number" class="number-input" v-model.number="datasetSize">
+      new datapoints
+      <button class="button" @click="data = []">reset</button>
+      {{data.length}}
+    </div>
+    <LineGraph :data="largeData" />
   </div>
 </template>
 
@@ -35,8 +50,21 @@ export default {
 @media (min-width: 1024px) {
   .about {
     min-height: 100vh;
-    display: flex;
     align-items: center;
+    display: grid;
   }
+}
+
+.controls {
+  grid-row: 1 / span 1;
+}
+
+.number-input {
+  max-width: 50px;
+  color: var(--color-text);
+  background-color: var(--color-background);
+  border-style: solid;
+  border-width: 1px;
+  border-color: grey;
 }
 </style>
